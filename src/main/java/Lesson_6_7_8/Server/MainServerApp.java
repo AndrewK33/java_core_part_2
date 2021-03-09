@@ -2,9 +2,7 @@ package Lesson_6_7_8.Server;
 
 import Lesson_6_7_8.Client.EchoClient;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -18,6 +16,7 @@ public class MainServerApp {
             System.out.println("Client ready");
             DataInputStream dis = new DataInputStream(socket.getInputStream());
             DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
             while (true) {
 
@@ -30,7 +29,26 @@ public class MainServerApp {
                     break;
                 }
 
-                dos.writeUTF("Echo: " + clienMessage);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            while (true) {
+                                String name = reader.readLine();
+                                dos.writeUTF("Проверка инпута со стороны сервера: " + name);
+                                if (name.equalsIgnoreCase("/end")) {
+                                    break;
+                                }
+
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
+
+
+
             }
 
         } catch (IOException ignored) {
