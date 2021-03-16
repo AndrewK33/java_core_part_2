@@ -1,6 +1,6 @@
 package Lesson_6_7_8.Server;
 
-import Lesson_6_7_8.Client.EchoClient;
+import Lesson_6_7_8.Server.services.MyServer;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -8,7 +8,9 @@ import java.net.Socket;
 
 public class MainServerApp {
     public static void main(String[] args) {
-        Socket socket = null;
+        new MyServer();
+
+        /*Socket socket = null;
 
         try (ServerSocket serverSocket = new ServerSocket(8181)){
             System.out.println("Server start");
@@ -35,7 +37,7 @@ public class MainServerApp {
                         try {
                             while (true) {
                                 String name = reader.readLine();
-                                dos.writeUTF("Проверка инпута со стороны сервера: " + name);
+                                dos.writeUTF("Ответ сервера: " + name);
                                 if (name.equalsIgnoreCase("/end")) {
                                     break;
                                 }
@@ -76,6 +78,7 @@ public class MainServerApp {
             s.close();
         } catch (IOException ignored) {
         }
+         */
 
 
     }

@@ -1,8 +1,7 @@
-package Lesson_6_7_8.Client;
+package Lesson_6_7_8.Client.client_1;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -13,11 +12,13 @@ public class EchoClient extends JFrame {
     private JTextArea chatArea;
 
     private final static String IP_ADDRESS = "localhost";
-    private final static int SERVER_PORT = 8181;
+    private final static int SERVER_PORT = 8081;
 
     private Socket socket;
     private DataInputStream dis;
     private DataOutputStream dos;
+
+    private boolean isAuthorized;
 
 
 
@@ -36,28 +37,49 @@ public class EchoClient extends JFrame {
     }
 
 
+    public boolean isAuthorized() {
+        return isAuthorized;
+    }
+
+    public void setAuthorized(boolean authorized) {
+        isAuthorized = authorized;
+    }
+
+
 
 
     private void connection () throws IOException {
         socket = new Socket(IP_ADDRESS, SERVER_PORT);
         dis = new DataInputStream(socket.getInputStream());
         dos = new DataOutputStream(socket.getOutputStream());
+        setAuthorized(false);
 
 
-        new Thread(() -> {
-            while (true){
-                try {
+        Thread thread = new Thread(() -> {
+            try {
+                while (true){
                     String serverMessage = dis.readUTF();
-                    if (serverMessage.equalsIgnoreCase("/q")){
+                    if (serverMessage.startsWith("/authisok")) {
+                        setAuthorized(true);
+                        chatArea.append("SERVER NOTIFICATION: " + serverMessage + "\n");
                         break;
                     }
-
-                    chatArea.append(serverMessage + "\n");
-                } catch (IOException ignored) {
+                    chatArea.append("SERVER NOTIFICATION: " + serverMessage + "\n");
                 }
+                while (true){
+
+                    String serverMessage = dis.readUTF();
+                    if (serverMessage.equals("/q")){
+                        break;
+                    }
+                    chatArea.append(serverMessage + "\n");
+                }
+            } catch (IOException ignored) {
             }
             closeConnetection();
-        }).start();
+        });
+        /*thread.setDaemon(true);*/
+        thread.start();
     }
 
 
@@ -66,10 +88,12 @@ public class EchoClient extends JFrame {
             try {
                 String messageToServer = msgInputField.getText();
                 dos.writeUTF(messageToServer);
-                chatArea.append("Проверка инпута с чата: " + msgInputField.getText() + "\n");
+                /*if (!messageToServer.equals("/q") || !messageToServer.startsWith("/auth")) {
+                    chatArea.append(messageToServer + "\n");
+                }*/
                 msgInputField.setText("");
-
-            } catch (IOException ignored) {
+            }
+            catch (IOException ignored) {
             }
         }
     }
