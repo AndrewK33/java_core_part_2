@@ -84,10 +84,9 @@ public class MyServer {
                 c.sendMessage(clientHandler.getName() + ": send private message " + " " + message);
                 clientHandler.sendMessage("You send private message: " + toNick + ": " + message);
                 return;
-            } else {
-            clientHandler.sendMessage("SERVER NOTIFICATION: " + toNick + " is offline");
             }
         }
+        clientHandler.sendMessage("SERVER NOTIFICATION: " + toNick + " is offline");
     }
 
     public synchronized void sendOnlineClientLists(ClientHandler c) {

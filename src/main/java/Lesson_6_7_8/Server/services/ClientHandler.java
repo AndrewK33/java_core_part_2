@@ -66,7 +66,7 @@ public class ClientHandler {
                     if (!myServer.isNickBusy(nick)) {
                         sendMessage("/authisok " + nick);
                         name = nick;
-                        myServer.sendMessageToClients("SERVER NOTIFICATION:" + nick + "is joined to chat" + "\n");
+                        myServer.sendMessageToClients("SERVER NOTIFICATION: " + nick + " is joined to chat" + "\n");
                         myServer.subscribe(this);
                         return;
 
